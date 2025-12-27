@@ -1,0 +1,18 @@
+---
+id: 0
+name: Mainnet deployment
+network: mainnet
+stacks-node: "https://api.hiro.so"
+bitcoin-node: "http://blockstack:blockstacksystem@bitcoin.blockstack.com:8332"
+plan:
+  batches:
+    - id: 0
+      transactions:
+        - contract-publish:
+            contract-name: daily-checkin
+            expected-sender: SP31G2FZ5JN87BATZMP4ZRYE5F7WZQDNEXJ7G7X97
+            cost: 807510
+            path: contracts/daily-checkin.clar
+            anchor-block-only: true
+            clarity-version: 2
+      epoch: "2.5"

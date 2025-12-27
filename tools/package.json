@@ -1,0 +1,10 @@
+{
+  "name": "daily-checkin-tools",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "@stacks/network": "^6.13.0",
+    "@stacks/transactions": "^6.13.0",
+    "@stacks/wallet-sdk": "^6.13.0"
+  }
+}

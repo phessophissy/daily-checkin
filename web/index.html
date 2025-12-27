@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Check-in | Earn Points</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🎯 Daily Check-in</h1>
+      <p class="subtitle">Check in daily to earn points and build your streak!</p>
+    </header>
+
+    <div id="connect-section" class="card">
+      <h2>Connect Wallet</h2>
+      <p>Connect your Stacks wallet to get started</p>
+      <button id="connect-btn" class="btn btn-primary">Connect Wallet</button>
+    </div>
+
+    <div id="user-section" class="card hidden">
+      <div class="user-header">
+        <span id="user-address" class="address"></span>
+        <button id="disconnect-btn" class="btn btn-small">Disconnect</button>
+      </div>
+      
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-value" id="user-points">0</span>
+          <span class="stat-label">Points</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="user-streak">0</span>
+          <span class="stat-label">Day Streak</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="user-checkins">0</span>
+          <span class="stat-label">Total Check-ins</span>
+        </div>
+      </div>
+
+      <div class="checkin-section">
+        <button id="checkin-btn" class="btn btn-large btn-success">
+          ✅ Check In Now
+        </button>
+        <p id="checkin-status" class="status-text"></p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>📊 Global Stats</h2>
+      <div class="global-stats">
+        <div class="global-stat">
+          <span class="label">Total Check-ins:</span>
+          <span id="global-checkins" class="value">-</span>
+        </div>
+        <div class="global-stat">
+          <span class="label">Unique Users:</span>
+          <span id="global-users" class="value">-</span>
+        </div>
+        <div class="global-stat">
+          <span class="label">Points per Check-in:</span>
+          <span id="points-per-checkin" class="value">-</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>ℹ️ How It Works</h2>
+      <ul class="info-list">
+        <li>Check in once per day (~144 blocks)</li>
+        <li>Earn <strong>100 points</strong> per check-in</li>
+        <li>Build streaks for <strong>bonus points</strong> (+10 per streak day)</li>
+        <li>Points may be used for future rewards</li>
+      </ul>
+    </div>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
