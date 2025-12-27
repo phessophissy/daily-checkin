@@ -6,8 +6,6 @@ A Stacks blockchain-based daily check-in system where users earn points for cons
 
 Users can check in once per day (every 144 blocks ~24hrs) and earn points. Consecutive check-ins build streaks that multiply rewards!
 
-**Deployed Contract:** [`SP31G2FZ5JN87BATZMP4ZRYE5F7WZQDNEXJ7G7X97.daily-checkin`](https://explorer.hiro.so/txid/SP31G2FZ5JN87BATZMP4ZRYE5F7WZQDNEXJ7G7X97.daily-checkin?chain=mainnet)
-
 ## ✨ Features
 
 - **Daily Check-ins**: Check in once every 144 blocks (~24 hours)
