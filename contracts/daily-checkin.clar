@@ -151,6 +151,69 @@
   )
 )
 
+;; Bulk operations
+
+;; Bulk check-in for multiple users (up to 10 users per transaction)
+(define-private (check-in-internal (user principal))
+  (let (
+    (last-block (get-last-checkin user))
+    (current-block block-height)
+    (current-points (get-user-points user))
+    (current-streak (get-user-streak user))
+    (current-user-checkins (get-user-total-checkins user))
+    (is-new-user (is-eq last-block u0))
+  )
+    ;; Check if user can check in (24h passed)
+    (asserts! (can-checkin user) ERR-ALREADY-CHECKED-IN)
+
+    ;; Calculate new streak
+    (let (
+      (new-streak (if (and (not is-new-user)
+                          (< (- current-block last-block) (* BLOCKS-PER-DAY u2)))
+                    (+ current-streak u1)
+                    u1))
+      (streak-points (* new-streak (var-get streak-bonus)))
+      (earned-points (+ (var-get points-per-checkin) streak-points))
+    )
+      ;; Update user data
+      (map-set last-checkin user current-block)
+      (map-set user-points user (+ current-points earned-points))
+      (map-set user-streak user new-streak)
+      (map-set user-total-checkins user (+ current-user-checkins u1))
+
+      ;; Update global stats
+      (var-set total-checkins (+ (var-get total-checkins) u1))
+      (if is-new-user
+        (var-set unique-users (+ (var-get unique-users) u1))
+        true
+      )
+
+      ;; Return earned points and new totals
+      (ok {
+        earned: earned-points,
+        total-points: (+ current-points earned-points),
+        streak: new-streak,
+        total-checkins: (+ current-user-checkins u1)
+      })
+    )
+  )
+)
+
+(define-public (bulk-check-in (users (list 10 principal)))
+  (let (
+    (fee-total (* (len users) CHECKIN-FEE))
+  )
+    ;; Basic validations
+    (asserts! (> (len users) u0) ERR-INVALID-AMOUNT)
+
+    ;; Collect total fee from caller
+    (try! (stx-transfer? fee-total tx-sender CONTRACT-OWNER))
+
+    ;; Process all check-ins - each will validate individually
+    (ok (map check-in-internal users))
+  )
+)
+
 ;; Admin functions
 (define-public (set-points-per-checkin (new-points uint))
   (begin
