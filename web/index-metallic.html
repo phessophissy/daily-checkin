@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Checkin - Metallic Theme</title>
+  
+  <!-- Metallic Theme Styles -->
+  <link rel="stylesheet" href="./styles/metallic-theme.css">
+  <link rel="stylesheet" href="./styles/components.css">
+  <link rel="stylesheet" href="./styles/layout.css">
+  
+  <style>
+    /* Inline critical styles for faster rendering */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    html {
+      scroll-behavior: smooth;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 100%);
+      color: #e8e8e8;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+  </style>
+</head>
+<body>
+  <div class="layout-container">
+    <!-- Header -->
+    <header>
+      <div class="container">
+        <div class="flex-between">
+          <div>
+            <h1 style="margin: 0; font-size: 1.8rem; color: #d4af37;">⛓️ Daily Checkin</h1>
+            <p style="margin: 0; color: #b0b0b0; font-size: 0.9rem;">Stacks Blockchain Check-in System</p>
+          </div>
+          <div id="wallet-connect" class="flex-center" style="gap: 16px;">
+            <div id="wallet-status" class="status-badge status-inactive">Disconnected</div>
+            <button id="connect-wallet-btn" class="btn btn-primary">Connect Wallet</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="layout-main">
+      <div class="container">
+        <!-- Hero Section -->
+        <div class="hero">
+          <h1 class="hero-title animate-fade-down">Daily Checkin</h1>
+          <p class="hero-subtitle animate-fade-up">Earn rewards by checking in daily on the Stacks blockchain</p>
+          <p class="hero-description animate-fade">
+            Our metallic-themed daily check-in system uses the Stacks blockchain for secure, 
+            decentralized reward tracking. Connect your Stacks wallet and start earning today!
+          </p>
+        </div>
+
+        <!-- Wallet Information Section -->
+        <div class="section animate-slide-left">
+          <h2 class="section-title">Wallet Connection</h2>
+          <div class="wallet-section">
+            <div class="wallet-info">
+              <div class="wallet-status">
+                <div id="status-indicator" class="status-dot"></div>
+                <div>
+                  <p style="margin: 0; color: #d4af37; font-weight: 600;">Wallet Status</p>
+                  <p id="wallet-connection-status" style="margin: 0; color: #b0b0b0; font-size: 0.9rem;">Not Connected</p>
+                </div>
+              </div>
+            </div>
+            <div style="border-bottom: 1px solid #b0b0b0; margin: 16px 0;"></div>
+            <div id="wallet-address-section" style="display: none;">
+              <p style="color: #b0b0b0; font-size: 0.9rem; margin-bottom: 8px;">Connected Address:</p>
+              <p id="wallet-address" class="wallet-address"></p>
+              <button id="disconnect-wallet-btn" class="btn" style="margin-top: 16px; padding: 10px 20px; font-size: 0.9rem;">Disconnect</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Statistics Section -->
+        <div class="section animate-slide-right">
+          <h2 class="section-title">Your Statistics</h2>
+          <div class="stats-container">
+            <div class="stat-card">
+              <p class="stat-label">Total Checkins</p>
+              <p id="total-checkins" class="stat-value">0</p>
+            </div>
+            <div class="stat-card">
+              <p class="stat-label">Consecutive Days</p>
+              <p id="consecutive-days" class="stat-value">0</p>
+            </div>
+            <div class="stat-card">
+              <p class="stat-label">STX Earned</p>
+              <p id="stx-earned" class="stat-value">0.000</p>
+            </div>
+            <div class="stat-card">
+              <p class="stat-label">Last Checkin</p>
+              <p id="last-checkin" class="stat-value">—</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Daily Checkin Section -->
+        <div class="section animate-scale">
+          <h2 class="section-title">Daily Check-in</h2>
+          <div class="checkin-section">
+            <h3 class="checkin-title">Ready to check in?</h3>
+            <p class="checkin-description">Check in once per day to maintain your streak and earn rewards</p>
+            
+            <div class="checkin-fee">
+              💰 Fee: 0.001 STX (1000 microSTX)
+            </div>
+
+            <div id="checkin-info" style="color: #b0b0b0; margin-bottom: 24px; font-size: 0.95rem;">
+              <p id="today-status">Connect your wallet to check in</p>
+              <p id="fee-explanation" style="margin-top: 8px; color: #808080; font-size: 0.85rem;">
+                The 0.001 STX fee goes to the contract deployer for maintenance and rewards distribution
+              </p>
+            </div>
+
+            <button 
+              id="checkin-btn" 
+              class="checkin-button" 
+              disabled
+              style="cursor: not-allowed; opacity: 0.5;"
+            >
+              📱 Check In Today
+            </button>
+
+            <div id="loading-indicator" style="display: none; margin-top: 24px; text-align: center;">
+              <div class="spinner" style="display: inline-block; margin-right: 12px;"></div>
+              <span>Processing your check-in...</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="section">
+          <h2 class="section-title">Features</h2>
+          <div class="features-grid">
+            <div class="feature-item">
+              <div class="feature-icon">🔐</div>
+              <h3 class="feature-title">Secure & Decentralized</h3>
+              <p>All transactions are on-chain using the Stacks blockchain for maximum security</p>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">⛓️</div>
+              <h3 class="feature-title">Stacks Integration</h3>
+              <p>Uses @stacks/connect for wallet integration and @stacks/transactions for blockchain operations</p>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">💎</div>
+              <h3 class="feature-title">Reward System</h3>
+              <p>Earn STX rewards for maintaining your daily check-in streaks</p>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">🎨</div>
+              <h3 class="feature-title">Premium UI</h3>
+              <p>Beautiful metallic theme with smooth animations and responsive design</p>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">📊</div>
+              <h3 class="feature-title">Track Progress</h3>
+              <p>Real-time statistics showing your check-in history and rewards</p>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">⚡</div>
+              <h3 class="feature-title">Fast Transactions</h3>
+              <p>Quick and efficient transaction processing on Stacks testnet</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Information Section -->
+        <div class="section">
+          <h2 class="section-title">How It Works</h2>
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Step 1: Connect</h3>
+              </div>
+              <p>
+                Click "Connect Wallet" and authorize the connection using your Stacks wallet 
+                (like Hiro Wallet or Xverse).
+              </p>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Step 2: Check In</h3>
+              </div>
+              <p>
+                Once connected, click the "Check In Today" button to submit your daily check-in 
+                transaction with a 0.001 STX fee.
+              </p>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Step 3: Earn</h3>
+              </div>
+              <p>
+                Your check-in is recorded on the blockchain. Maintain streaks to earn additional 
+                STX rewards!
+              </p>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Step 4: Track</h3>
+              </div>
+              <p>
+                View your statistics including total check-ins, current streak, and total STX earned 
+                in the dashboard.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Transaction History Section -->
+        <div class="section" style="display: none;">
+          <h2 class="section-title">Recent Transactions</h2>
+          <div class="card">
+            <div id="transaction-history" style="max-height: 400px; overflow-y: auto;">
+              <p style="color: #b0b0b0; text-align: center; padding: 40px 20px;">
+                No transactions yet
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <p>&copy; 2024 Daily Checkin - Powered by Stacks Blockchain</p>
+      <div class="footer-links">
+        <a href="#" class="footer-link">Documentation</a>
+        <a href="#" class="footer-link">GitHub</a>
+        <a href="#" class="footer-link">Community</a>
+        <a href="#" class="footer-link">Support</a>
+      </div>
+      <p style="font-size: 0.85rem; color: #808080; margin-top: 20px;">
+        Testnet Version | SP2KYZRNME33Y39GP3RKC90DQJ45EF1N0NZNVRE09
+      </p>
+    </footer>
+  </div>
+
+  <!-- Notifications Container -->
+  <div id="notifications-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;"></div>
+
+  <!-- Scripts -->
+  <script src="./lib/wallet-integration.js"></script>
+  <script src="./lib/transaction-handler.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
