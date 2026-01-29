@@ -91,13 +91,10 @@
 )
 
 (define-read-only (can-checkin (user principal))
-  (let (
-    (last-block (get-last-checkin user))
-    (current-block block-height)
-  )
+  (let ((last-block (get-last-checkin user)))
     (or
       (is-eq last-block u0)
-      (>= (- current-block last-block) BLOCKS-PER-DAY)
+      (>= (- block-height last-block) BLOCKS-PER-DAY)
     )
   )
 )
@@ -131,7 +128,6 @@
   (let (
     (user tx-sender)
     (last-block (get-last-checkin user))
-    (current-block block-height)
     (current-points (get-user-points user))
     (current-streak (get-user-streak user))
     (current-user-checkins (get-user-total-checkins user))
@@ -145,37 +141,63 @@
     ;; Collect check-in fee to contract deployer (0.001 STX)
     (try! (stx-transfer? fee user (var-get contract-deployer)))
 
-    ;; Calculate new streak
-    (let (
-      (new-streak (if (and (not is-new-user)
-                          (< (- current-block last-block) (* BLOCKS-PER-DAY u2)))
-                    (+ current-streak u1)
-                    u1))
-      (streak-points (* new-streak (var-get streak-bonus)))
-      (earned-points (+ (var-get points-per-checkin) streak-points))      
-    )
-      ;; Update user data
-      (map-set last-checkin user current-block)
-      (map-set user-points user (+ current-points earned-points))
-      (map-set user-streak user new-streak)
-      (map-set user-total-checkins user (+ current-user-checkins u1))
-      (map-set user-fee-paid user (+ current-fee-paid fee))
-
-      ;; Update global stats
-      (var-set total-checkins (+ (var-get total-checkins) u1))
-      (if is-new-user
-        (var-set unique-users (+ (var-get unique-users) u1))
-        true
+    ;; Calculate streak based on time since last check-in
+    (if (and (not is-new-user)
+            (< (- block-height last-block) (* BLOCKS-PER-DAY u2)))
+      ;; Streak continues - less than 48 hours since last check-in
+      (let (
+        (new-streak (+ current-streak u1))
+        (streak-points (* new-streak (var-get streak-bonus)))
+        (earned-points (+ (var-get points-per-checkin) streak-points))
       )
+        ;; Update user data
+        (map-set last-checkin user block-height)
+        (map-set user-points user (+ current-points earned-points))
+        (map-set user-streak user new-streak)
+        (map-set user-total-checkins user (+ current-user-checkins u1))
+        (map-set user-fee-paid user (+ current-fee-paid fee))
 
-      ;; Return earned points and new totals
-      (ok {
-        earned: earned-points,
-        total-points: (+ current-points earned-points),
-        streak: new-streak,
-        total-checkins: (+ current-user-checkins u1),
-        fee-paid: fee
-      })
+        ;; Update global stats
+        (var-set total-checkins (+ (var-get total-checkins) u1))
+
+        ;; Return earned points and new totals
+        (ok {
+          earned: earned-points,
+          total-points: (+ current-points earned-points),
+          streak: new-streak,
+          total-checkins: (+ current-user-checkins u1),
+          fee-paid: fee
+        })
+      )
+      ;; Streak reset - more than 48 hours since last check-in
+      (let (
+        (new-streak u1)
+        (streak-points (* new-streak (var-get streak-bonus)))
+        (earned-points (+ (var-get points-per-checkin) streak-points))
+      )
+        ;; Update user data
+        (map-set last-checkin user block-height)
+        (map-set user-points user (+ current-points earned-points))
+        (map-set user-streak user new-streak)
+        (map-set user-total-checkins user (+ current-user-checkins u1))
+        (map-set user-fee-paid user (+ current-fee-paid fee))
+
+        ;; Update global stats
+        (var-set total-checkins (+ (var-get total-checkins) u1))
+        (if is-new-user
+          (var-set unique-users (+ (var-get unique-users) u1))
+          true
+        )
+
+        ;; Return earned points and new totals
+        (ok {
+          earned: earned-points,
+          total-points: (+ current-points earned-points),
+          streak: new-streak,
+          total-checkins: (+ current-user-checkins u1),
+          fee-paid: fee
+        })
+      )
     )
   )
 )
