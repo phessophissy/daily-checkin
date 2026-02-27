@@ -231,3 +231,7 @@
     (ok new-bonus)
   )
 )
+
+;; Get contract owner
+(define-read-only (get-contract-owner)
+  (ok CONTRACT-OWNER))
